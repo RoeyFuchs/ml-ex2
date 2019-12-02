@@ -1,40 +1,50 @@
 import sys
-import threading
 from DataOptions import *
-import numpy as np
-from scipy.stats.stats import pearsonr
-
 import datetime
 
 from Perceptron import Perceptron
 from PA import PA
+from SVM import SVM
 
 
 def main():
-    # findCor(getDataX(sys.argv[1]), getData(sys.argv[2]))
+    print(datetime.datetime.now())
+
+    A = Perceptron(sys.argv[1], sys.argv[2])
+    A.train()
+
+
+    C = PA(sys.argv[1], sys.argv[2])
+    C.train()
+
+
+
+    B = SVM(sys.argv[1], sys.argv[2])
+    B.train()
+    result(A,B,C,sys.argv[3])
 
     print(datetime.datetime.now())
-    A = PA(sys.argv[1], sys.argv[2])
 
-    perceptron_thread = threading.Thread(target=A.train)
-    perceptron_thread.start()
-    perceptron_thread.join()
-    print(datetime.datetime.now())
+    '''print("perceptron test: ")
     test(A, sys.argv[1], sys.argv[2])
-    '''
-    s = 50
-    ans = np.zeros([50, 2])
-    i = 0
-    while (s < 2500):
-        A.train(s)
-        ans[i] = s, test(A, sys.argv[1], sys.argv[2])
-        i += 1
-        s += 100
-    '''
+
+    print("SVM test: ")
+    test(B, sys.argv[1], sys.argv[2])
+    print("PA test: ")
+    test(C, sys.argv[3], sys.argv[2])'''
+
+
+def result(perceptron, svm, pa, file):
+    q = getDataX(file)
+    for i in range(q.shape[0]):
+        perceptron_yhat = perceptron.predict(q[i])
+        svm_yhat = svm.predict(q[i])
+        pa_yhat = pa.predict(q[i])
+        print(f"perceptron: {perceptron_yhat}, svm: {svm_yhat}, pa: {pa_yhat}")
+
 
 
 def test(alg, q, ans):
-    q = getDataX(q)
     ans = getData(ans)
     err = 0
     for i in range(q.shape[0]):
@@ -42,13 +52,10 @@ def test(alg, q, ans):
             # print("predict = " + str(alg.predict(q[i]))+ ", ans[i] = "+ str(ans[i]))
             err += 1
             # print("error")
-    print("ERROR = " + str(err) + "/" + str(q.shape[0]) + " = " + str(err / q.shape[0]))
-    return err
-
-
-def findCor(a, b):
-    for i in range(a.shape[1]):
-        print(str(i) + " = " + str(pearsonr(a[:, i], b)))
+    #print("ERROR = " + str(err) + "/" + str(q.shape[0]) + " = " + str(err / q.shape[0]))
+    success = (1-(err / q.shape[0]))*100
+    print("success = " + str((1-(err / q.shape[0]))*100) + "%")
+    return success
 
 
 if __name__ == "__main__":

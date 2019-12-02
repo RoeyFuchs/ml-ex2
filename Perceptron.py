@@ -8,13 +8,13 @@ class Perceptron:
     def __init__(self, trainx, trainy):
         self._trainx = trainx
         self._trainy = trainy
-        self._eta = 0.1
+        self._eta = 1
         self._w = None
 
-    def train(self, itr=1650):
+    def train(self, itr=150):
         x_data = getDataX(self._trainx)
         y_data = getData(self._trainy)
-        w = np.ones([3, x_data.shape[1]])
+        w = np.zeros([3, x_data.shape[1]])
         for _ in range(itr):
             prev_w = w.copy()
             for x, y in zip(x_data, y_data):
