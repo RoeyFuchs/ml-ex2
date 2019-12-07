@@ -5,7 +5,6 @@ from PA import PA
 from SVM import SVM
 
 def main():
-
     perc = Perceptron(sys.argv[1], sys.argv[2])
     perc.train()
     svm = SVM(sys.argv[1], sys.argv[2])
