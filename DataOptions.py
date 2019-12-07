@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def replaceNominal(arr):
     arr[arr == "M"] = -0.4
     arr[arr == "F"] = 0.8
@@ -10,17 +9,13 @@ def replaceNominal(arr):
 
 def getData(file_name):
     a = np.genfromtxt(file_name, delimiter=',', dtype='str')
-    a = replaceNominal(a)
+    a = replaceNominal(a) # change from M,F,I to numbers
     a = a.astype(float)
     return a
 
 
 def getDataX(file_name):
-    a = np.genfromtxt(file_name, delimiter=',', dtype='str')
-    a = replaceNominal(a)
-    a = a.astype(float)
-
-    for i in range(a.shape[1]):  # normalize
+    a = getData(file_name)
+    for i in range(a.shape[1]):  # normalize - Z-Score
         a[:, i] = (a[:, i] - np.mean(a[:,i]))/np.std(a[:, i])
-
     return a

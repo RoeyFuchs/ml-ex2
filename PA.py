@@ -8,11 +8,11 @@ class PA:
         self._trainy = trainy
         self._w = None
 
-    def train(self, itr=100):
+    def train(self, epochs=100):
         x_data = getDataX(self._trainx)
         y_data = getData(self._trainy)
-        w = np.ones([3, x_data.shape[1]])
-        for _ in range(itr):
+        w = np.zeros([3, x_data.shape[1]])
+        for _ in range(epochs):
             prev_w = w.copy()
             for x, y in zip(x_data, y_data):
                 y_hat = np.argmax(np.dot(w, x))
