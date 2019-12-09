@@ -1,5 +1,5 @@
 import sys
-from DataOptions import *
+from Utils import *
 import datetime
 
 from Perceptron import Perceptron
@@ -9,14 +9,11 @@ from SVM import SVM
 
 def main():
     print(datetime.datetime.now())
-
-
     A = Perceptron(sys.argv[1], sys.argv[2])
     A.train()
-
-
+    '''
     C = PA(sys.argv[1], sys.argv[2])
-    C.train()
+    C.train()'''
 
     '''lam = 1.11
     for _ in range(10):
@@ -41,8 +38,8 @@ def main():
 
 
 
-    B = SVM(sys.argv[1], sys.argv[2])
-    B.train()
+    '''B = SVM(sys.argv[1], sys.argv[2])
+    B.train()'''
     # result(A,B,C,sys.argv[3])
 
     print(datetime.datetime.now())
@@ -50,14 +47,14 @@ def main():
     print("perceptron test: ")
     test(A, sys.argv[3], sys.argv[4])
 
-    print("SVM test: ")
-    test(B, sys.argv[3], sys.argv[4])
-    print("PA test: ")
-    test(C, sys.argv[3], sys.argv[4])
+    '''print("SVM test: ")
+    test(B, sys.argv[3], sys.argv[4])'''
+    '''print("PA test: ")
+    test(C, sys.argv[3], sys.argv[4])'''
 
 
 def result(perceptron, svm, pa, file):
-    q = getDataX(file)
+    q = get_data_x(file)
     for i in range(q.shape[0]):
         perceptron_yhat = perceptron.predict(q[i])
         svm_yhat = svm.predict(q[i])
@@ -67,8 +64,8 @@ def result(perceptron, svm, pa, file):
 
 
 def test(alg, q, ans):
-    ans = getData(ans)
-    q = getDataX(q)
+    ans = get_data(ans)
+    q = get_data_x(q)
     err = 0
     for i in range(q.shape[0]):
         if alg.predict(q[i]) != int(ans[i]):

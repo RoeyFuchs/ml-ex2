@@ -1,5 +1,5 @@
 import sys
-from DataOptions import *
+from Utils import *
 from Perceptron import Perceptron
 from PA import PA
 from SVM import SVM
@@ -16,7 +16,7 @@ def main():
 
 
 def result(perceptron, svm, pa, file):
-    q = getDataX(file)
+    q = get_data_x(file)
     for i in range(q.shape[0]):
         perceptron_yhat = perceptron.predict(q[i])
         svm_yhat = svm.predict(q[i])

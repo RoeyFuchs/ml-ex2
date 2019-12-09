@@ -1,5 +1,4 @@
-import numpy as np
-from DataOptions import getData, getDataX
+from Utils import *
 
 
 class PA:
@@ -8,25 +7,34 @@ class PA:
         self._trainy = trainy
         self._w = None
 
-    def train(self, epochs=100):
-        x_data = getDataX(self._trainx)
-        y_data = getData(self._trainy)
+    def train(self, epochs=150):
+        x_data = get_data_x(self._trainx)
+        y_data = get_data(self._trainy)
+        x_data, y_data = shuffle_data(x_data, y_data)
+        x_data, y_data, x_valid, y_valid = split(x_data, y_data)
         w = np.zeros([3, x_data.shape[1]])
+        best_w = np.zeros([3, x_data.shape[1]])
         for _ in range(epochs):
             prev_w = w.copy()
+            x_data, y_data = shuffle_data(x_data, y_data)
             for x, y in zip(x_data, y_data):
-                y_hat = np.argmax(np.dot(w, x))
-                if int(y) != y_hat:
-                    w[int(y), :] = prev_w[int(y), :] + self.tau(w, x, y, y_hat) * x
-                    w[y_hat, :] = prev_w[y_hat, :] - self.tau(w, x, y, y_hat) * x
-        self._w = w
+                y = int(y)
+                arg_list = np.argsort(-np.dot(w, x))
+                if arg_list[0] == y:  # if y_hat == y, we will take another y_hat
+                    y_hat = arg_list[1]
+                else:
+                    y_hat = arg_list[0]
+                if hinge_loss(w, x, y, y_hat) > 0:  # check if need to update values
+                    t = self.tau(w, x, y, y_hat)
+                    w[y, :] = prev_w[y, :] + t * x
+                    w[y_hat, :] = prev_w[y_hat, :] - t * x
+            best_w = check_best(x_valid, y_valid, best_w, w)
+        self._w = best_w
 
     def predict(self, x):
         return np.argmax(np.dot(self._w, x))
 
     def tau(self, w, x, y, y_hat):
-        temp = (-np.dot(w[int(y), :], x)) + np.dot(w[y_hat, :], x)
-        l = max(0, 1 + temp)
         n = np.linalg.norm(x)
         n = n ** 2
-        return l / (2 * n)
+        return hinge_loss(w, x, y, y_hat) / (2 * n)
